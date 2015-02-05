@@ -45,6 +45,8 @@ public class MainActivity extends Activity {
 		// TODO: Create an intent with the action
 		// MediaStore.ACTION_IMAGE_CAPTURE
 		
+
+		
 		// ComponentName cn = new ComponentName("es.softwareprocess.bogopicgen",
 		// "es.softwareprocess.bogopicgen.BogoPicGenActivity");
 		// ComponentName cn = new ComponentName("com.android.camera",
@@ -64,6 +66,11 @@ public class MainActivity extends Activity {
 				+ String.valueOf(System.currentTimeMillis()) + ".jpg";
 		File imageFile = new File(imageFilePath);
 		imageFileUri = Uri.fromFile(imageFile);
+		
+		Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+		intent.putExtra(MediaStore.EXTRA_OUTPUT, imageFileUri);
+		
+		startActivityForResult(intent, CAPTURE_IMAGE_ACTIVITY_REQUEST_CODE);
 
 		// TODO: Put in the intent in the tag MediaStore.EXTRA_OUTPUT the URI
 		
@@ -73,15 +80,40 @@ public class MainActivity extends Activity {
 	}
 
 	protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+		
+		if (requestCode == CAPTURE_IMAGE_ACTIVITY_REQUEST_CODE)
+		{
+		
 		// TODO: Handle the results from CAPTURE_IMAGE_ACTIVITY_REQUEST_CODE
+			
+			if (resultCode == RESULT_OK){
+				TextView tv = (TextView) findViewById(R.id.status);
+				tv.setText("Photo OK!");
+				
+				ImageButton ib = (ImageButton) findViewById(R.id.TakeAPhoto);
+				Drawable picture = Drawable.createFromPath(imageFileUri.getPath());
+				ib.setImageDrawable(picture);
+				ib.refreshDrawableState();
+				
+			}
+			else if(resultCode == RESULT_CANCELED){
+				TextView tv = (TextView) findViewById(R.id.status);
+				tv.setText("Photo Cancelled");
+			}
+			else{
+				TextView tv = (TextView) findViewById(R.id.status);
+				tv.setText("Photo Failed");
+			}
 		
 		// TODO: Handle the cases for RESULT_OK, RESULT_CANCELLED, and others
+			
+			
 		
 		// When the result is OK, set text "Photo OK!" in the status
 		//		and set the image in the Button with:
 		//		button.setImageDrawable(Drawable.createFromPath(imageFileUri.getPath()));
 		// When the result is CANCELLED, set text "Photo canceled" in the status
 		// Otherwise, set text "Not sure what happened!" with the resultCode
-		
+		}
 	}
 }
